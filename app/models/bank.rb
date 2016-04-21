@@ -19,7 +19,7 @@ class Bank
   ExchangeError = Class.new(StandardError)
 
   def self.exchange(need_change)
-    bank        = Bank.last || raise(ExchangeError, "Sorry, bank not initialized yet")
+    bank        = Bank.last || raise(ExchangeError, "Sorry, bank was not initialized yet")
     need_change = need_change * 100
     total_bank  = 0
     bank.content.each { |k, v| total_bank += k.to_i * v }
@@ -29,17 +29,12 @@ class Bank
     change = {}
 
     bank.content.each do |k, v|
-      need_coins = need_change / k.to_i
-      if v >= need_coins
-        change[k]       = need_coins
-        bank.content[k] = bank.content[k] - need_coins
-        need_change     -= k.to_i * need_coins
-        break if need_change == 0
-      else
-        change[k]       = v
-        bank.content[k] = (bank.content[k] - v)
-        need_change     -= k.to_i * v
-      end
+      need_coins      = need_change / k.to_i
+      m               = [v, need_coins].min
+      change[k]       = m
+      bank.content[k] = bank.content[k] - m
+      need_change     -= k.to_i * m
+      break if need_change == 0
     end
 
     raise ExchangeError, 'Sorry, there are no coins to correctly exchange' unless need_change == 0

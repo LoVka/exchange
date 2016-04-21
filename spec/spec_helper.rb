@@ -7,4 +7,8 @@ RSpec.configure do |config|
   def app
     Rails.application
   end
+
+  config.before(:each) do
+    Bank.delete_all
+  end
 end

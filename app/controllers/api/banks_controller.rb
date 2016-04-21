@@ -17,4 +17,5 @@ class Api::BanksController < ApplicationController
     param! :need_change, Integer, required: true
     render json: Bank.exchange(params[:need_change]), status: 200
   end
+
 end

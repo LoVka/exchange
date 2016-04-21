@@ -3,6 +3,8 @@ class Bank
 
   field :content, type: Hash
   before_create :save_to_i
+  validate :validate_coins
+  NOMINAL_COINS = [1, 2, 5, 10, 25, 50, 100]
 
   def self.pretty(val)
     val    = val.map { |k, v| [k.to_i, v.to_i] }.sort_by { |k, v| -k }
@@ -49,5 +51,12 @@ class Bank
 
   def save_to_i
     self.content = Hash[content.map { |k, v| [k.to_i, v.to_i] }.sort_by { |k, v| -k }]
+  end
+
+  def validate_coins
+    invalid_coins = content.keys.map(&:to_i) - NOMINAL_COINS
+    if invalid_coins.any?
+      errors.add(:content, "includes invalid coins. Plese, use nominal coins: #{NOMINAL_COINS.join(', ')}")
+    end
   end
 end

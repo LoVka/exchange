@@ -11,7 +11,7 @@ Exchange JSON API
 $ curl -X POST "localhost:3000/api/banks" \
 $   --data "content[50]=4&content[25]=10&content[10]=18"
 
-{"content":{"50":4,"25":10,"10":18}}
+{"content":{"50":2,"25":10,"10":18}}
 ```
 
 ## Exchange amount

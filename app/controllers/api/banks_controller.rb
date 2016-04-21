@@ -3,14 +3,15 @@ class Api::BanksController < ApplicationController
     render json: { msg: ex.message }, status: 400
   end
 
+  rescue_from Mongoid::Errors::Validations do |ex|
+    render json: { msg: ex.record.errors.full_messages.join("\n") }, status: 422
+  end
+
   def create
     param! :content, Hash, required: true, blank: false
     Bank.delete_all
-    if bank = Bank.create!(content: params[:content])
-      render json: { msg: Bank.pretty(bank.content) }, status: 201
-    else
-      render json: { msg: 'Some wrong' }, status: 422
-    end
+    bank = Bank.create!(content: params[:content])
+    render json: { msg: Bank.pretty(bank.content) }, status: 201
   end
 
   def exchange

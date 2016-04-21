@@ -39,12 +39,6 @@ describe 'Excange' do
       expect(last_response.body).to eq('{"msg":"Sorry, not enough money for exchange"}')
     end
 
-    it "returns message that there is no coins to correctly exchange" do
-      post '/api/banks', content: { 30 => 7 }
-      get '/api/exchange', need_change: 2
-      expect(last_response.body).to eq('{"msg":"Sorry, there are no coins to correctly exchange"}')
-    end
-
     it "depends on available coins" do
       post '/api/banks', content: { 50 => 3, 25 => 6, 10 => 12, 2 => 5 }
       get '/api/exchange', need_change: 2
@@ -55,12 +49,10 @@ describe 'Excange' do
       expect(last_response.body).to eq('{"msg":"Sorry, not enough money for exchange"}')
     end
 
-    it "does not take coins from the bank if can't exchange" do
-      post '/api/banks', content: { 30 => 17 }
-      get '/api/exchange', need_change: 5
-      expect(last_response.body).to eq('{"msg":"Sorry, there are no coins to correctly exchange"}')
-      get '/api/exchange', need_change: 3
-      expect(last_response.body).to eq('{"msg":{"30 cents":"10 coins"}}')
+    it "returns message that there is no coins to correctly exchange" do
+      post '/api/banks', content: { 30 => 7 }
+      expect(last_response.body).to eq('{"msg":"Content includes invalid coins. Plese, use nominal coins: 1, 2, 5, 10, 25, 50, 100"}')
     end
+
   end
 end
